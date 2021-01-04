@@ -71,10 +71,30 @@ public class SqlRuParse {
         }
     }
 
+    public void parsePost(String url) throws IOException {
+        Document doc = Jsoup.connect(url).get();
+        String header = doc.select("title").get(0).ownText();
+        String body = doc.select("head > meta:nth-child(5)").get(0).attr("content");
+        String datS = doc.select("#content-wrapper-forum > table:nth-child(3)"
+                + " > tbody > tr:nth-child(3) > td").get(0).ownText();
+        String datNorm = new StringBuilder(datS).delete(datS.length() - 5, datS.length()).toString();
+        LocalDateTime dateJava = dateConvert(datNorm);
+        System.out.println("----title--");
+        System.out.println(header);
+        System.out.println("--meta content----");
+        System.out.println(body);
+        System.out.println("--data-----");
+        System.out.println(datNorm);
+        System.out.println(dateJava);
+    }
+
     public static void main(String[] args) throws Exception {
         SqlRuParse sqlRuParse = new SqlRuParse();
         String url = "https://www.sql.ru/forum/job-offers/1"; // последняя цифра - номер страницы
-        int pages = 5;
+        int pages = 1;
         sqlRuParse.parse(url, pages);
+//        String url1 = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-"
+//                + "cistemnye-analitiki-qa-i-devops-moskva-do-200t";
+//        sqlRuParse.parsePost(url1);
     }
 }
