@@ -77,7 +77,8 @@ public class SqlRuParse {
         String body = doc.select("head > meta:nth-child(5)").get(0).attr("content");
         String datS = doc.select("#content-wrapper-forum > table:nth-child(3)"
                 + " > tbody > tr:nth-child(3) > td").get(0).ownText();
-        String datNorm = new StringBuilder(datS).delete(datS.length() - 5, datS.length()).toString();
+        String datNorm = new StringBuilder(datS)
+                            .delete(datS.length() - 5, datS.length()).toString();
         LocalDateTime dateJava = dateConvert(datNorm);
         System.out.println("----title--");
         System.out.println(header);
@@ -96,5 +97,9 @@ public class SqlRuParse {
 //        String url1 = "https://www.sql.ru/forum/1325330/lidy-be-fe-senior-"
 //                + "cistemnye-analitiki-qa-i-devops-moskva-do-200t";
 //        sqlRuParse.parsePost(url1);
+
+        String url2 = "https://www.sql.ru/forum/1331700/vakansiya-razrabotchik-mdm";
+        sqlRuParse.parsePost(url2);
+
     }
 }
