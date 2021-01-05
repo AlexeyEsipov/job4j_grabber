@@ -1,4 +1,4 @@
-package ru.job4j.html;
+package ru.job4j.grabber;
 
 import java.time.LocalDate;
 
@@ -9,7 +9,8 @@ public class Post {
     private String text;
     private LocalDate created;
 
-    public Post(String url, String name, String text, LocalDate date) {
+    public Post(int id, String url, String name, String text, LocalDate date) {
+        this.id = id;
         this.url = url;
         this.name = name;
         this.text = text;
