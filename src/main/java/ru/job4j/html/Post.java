@@ -3,14 +3,33 @@ package ru.job4j.html;
 import java.time.LocalDate;
 
 public class Post {
+    private int id;
     private String url;
+    private String name;
     private String text;
-    private LocalDate data;
+    private LocalDate created;
 
-    public Post(String url, String text, LocalDate data) {
+    public Post(String url, String name, String text, LocalDate date) {
         this.url = url;
+        this.name = name;
         this.text = text;
-        this.data = data;
+        this.created = date;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUrl() {
@@ -29,11 +48,11 @@ public class Post {
         this.text = text;
     }
 
-    public LocalDate getData() {
-        return data;
+    public LocalDate getCreatedDate() {
+        return created;
     }
 
-    public void setData(LocalDate data) {
-        this.data = data;
+    public void setCreatedDate(LocalDate date) {
+        this.created = date;
     }
 }
