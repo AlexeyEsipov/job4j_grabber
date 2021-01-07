@@ -56,4 +56,15 @@ public class Post {
     public void setCreatedDate(LocalDate date) {
         this.created = date;
     }
+
+    @Override
+    public String toString() {
+        return "Post{"
+                + "id=" + id + '\''
+                + ", url='" + url + '\''
+                + ", name='" + name + '\''
+                + ", text='" + text + '\''
+                + ", created=" + created
+                + '}';
+    }
 }
