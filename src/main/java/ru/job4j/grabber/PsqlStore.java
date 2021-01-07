@@ -1,7 +1,5 @@
 package ru.job4j.grabber;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -91,22 +89,5 @@ public class PsqlStore implements Store, AutoCloseable {
         if (cnn != null) {
             cnn.close();
         }
-    }
-
-    public static void main(String[] args) {
-        Properties config = new Properties();
-        try (InputStream in = PsqlStore.class.getClassLoader()
-                .getResourceAsStream("grabber.properties")) {
-            config.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        PsqlStore psqlStore = new PsqlStore(config);
-        Post pp = new Post(1, "1http//00", "1dbf0", "1text_dbf0", LocalDate.parse("2020-02-02"));
-        psqlStore.save(pp);
-        pp = new Post(2, "2http//00", "2dbf0", "2text_dbf0", LocalDate.parse("2020-02-02"));
-        psqlStore.save(pp);
-        System.out.println(psqlStore.getAll().get(1).toString());
-       System.out.println(psqlStore.findById(1).toString());
     }
 }

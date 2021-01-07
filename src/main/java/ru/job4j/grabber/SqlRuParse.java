@@ -78,7 +78,6 @@ public class SqlRuParse implements Parse {
         try {
             Document  doc = Jsoup.connect(link).get();
             header = doc.select("title").get(0).ownText();
-            System.out.println(header);
 
             Elements el1 = doc.select("#content-wrapper-forum > table:nth-child(4) "
                     + "> tbody > tr:nth-child(2) > td:nth-child(2)");
@@ -103,12 +102,5 @@ public class SqlRuParse implements Parse {
             e.printStackTrace();
         }
         return new Post(++id, link, header, body, dateConvert(date));
-    }
-
-    public static void main(String[] args) {
-        SqlRuParse sqlRuParse = new SqlRuParse();
-        String url = "https://www.sql.ru/forum/job-offers/1"; // последняя цифра - номер страницы
-        List<Post> lp = sqlRuParse.list(url);
-        System.out.println(lp.size());
     }
 }
