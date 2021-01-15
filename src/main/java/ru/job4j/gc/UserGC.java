@@ -1,8 +1,8 @@
 package ru.job4j.gc;
 
 public class UserGC {
-    int a = 0;
-    int[] ar1 = new int[245];
+    private int a = 0;
+    private int[] ar1 = new int[245];
 
     public UserGC(int a) {
         this.a = a;
