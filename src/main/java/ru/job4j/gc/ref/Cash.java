@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Cash {
-    private Map<String, SoftReference<String>> map = new HashMap<>();
+    private final Map<String, SoftReference<String>> map = new HashMap<>();
 
     public String getFile(String fileName) {
         String string;
@@ -32,7 +32,8 @@ public class Cash {
 
     private String loadFile(String fileName) {
         String str = "";
-        try (BufferedReader bufReader = Files.newBufferedReader(Paths.get(fileName), Charset.forName("cp1251"))){
+        try (BufferedReader bufReader = Files.newBufferedReader(Paths.get(fileName),
+                Charset.forName("cp1251"))) {
             StringBuilder text = new StringBuilder();
             int read;
             while ((read = bufReader.read()) != -1) {
