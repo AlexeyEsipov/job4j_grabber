@@ -14,7 +14,7 @@ public class CinemaTest {
         Account account = new AccountCinema();
         Cinema cinema = new Cinema3D();
         Calendar date = Calendar.getInstance();
-        date.set(2021, 10, 10, 23, 00);
+        date.set(2021, Calendar.OCTOBER, 10, 23, 0);
         Ticket ticket = cinema.buy(account, 1, 1, date);
         assertThat(ticket, is(new Ticket3D()));
     }
@@ -41,9 +41,9 @@ public class CinemaTest {
         Cinema cinema = new Cinema3D();
         cinema.add(new Session3D());
         Calendar date = Calendar.getInstance();
-        date.set(2021, 10, 10, 23, 00);
+        date.set(2021, Calendar.OCTOBER, 10, 23, 0);
         Ticket ticket = cinema.buy(account, 1, 1, date);
-        Ticket ticketDuplicate = cinema.buy(account, 1,1, date);
+        Ticket ticketDuplicate = cinema.buy(account, 1, 1, date);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -52,7 +52,7 @@ public class CinemaTest {
         Cinema cinema = new Cinema3D();
         cinema.add(new Session3D());
         Calendar date = Calendar.getInstance();
-        date.set(2010, 10, 10, 23, 00);
+        date.set(2010, Calendar.OCTOBER, 10, 23, 0);
         Ticket ticket = cinema.buy(account, 1, 1, date);
     }
 
@@ -62,7 +62,7 @@ public class CinemaTest {
         Cinema cinema = new Cinema3D();
         cinema.add(new Session3D());
         Calendar date = Calendar.getInstance();
-        date.set(2020, 10, 10, 23, 00);
+        date.set(2020, Calendar.OCTOBER, 10, 23, 0);
         Ticket ticket = cinema.buy(account, -1, 1, date);
     }
 
@@ -72,7 +72,7 @@ public class CinemaTest {
         Cinema cinema = new Cinema3D();
         cinema.add(new Session3D());
         Calendar date = Calendar.getInstance();
-        date.set(2020, 10, 10, 23, 00);
+        date.set(2020, Calendar.OCTOBER, 10, 23, 0);
         Ticket ticket = cinema.buy(account, 1, -1, date);
     }
 }
