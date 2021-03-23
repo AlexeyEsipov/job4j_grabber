@@ -5,10 +5,7 @@ import static org.hamcrest.Matchers.is;
 
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.List;
-
+import java.util.*;
 
 public class CinemaTest {
 
@@ -17,7 +14,7 @@ public class CinemaTest {
         Account account = new AccountCinema();
         Cinema cinema = new Cinema3D();
         Calendar date = Calendar.getInstance();
-        date.set(2020, 10, 10, 23, 00);
+        date.set(2021, 10, 10, 23, 00);
         Ticket ticket = cinema.buy(account, 1, 1, date);
         assertThat(ticket, is(new Ticket3D()));
     }
@@ -27,7 +24,7 @@ public class CinemaTest {
         Cinema cinema = new Cinema3D();
         cinema.add(new Session3D());
         List<Session> sessions = cinema.find(session -> true);
-        assertThat(sessions, is(Arrays.asList(new Session3D())));
+        assertThat(sessions, is(Collections.singletonList(new Session3D())));
     }
 
     @Test
@@ -35,6 +32,47 @@ public class CinemaTest {
         Cinema cinema = new Cinema3D();
         cinema.add(new Session3D());
         List<Session> sessions = cinema.find(session -> true);
-        assertThat(sessions, is(Arrays.asList(new Session3D())));
+        assertThat(sessions, is(Collections.singletonList(new Session3D())));
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void buyDuplicate() {
+        Account account = new AccountCinema();
+        Cinema cinema = new Cinema3D();
+        cinema.add(new Session3D());
+        Calendar date = Calendar.getInstance();
+        date.set(2021, 10, 10, 23, 00);
+        Ticket ticket = cinema.buy(account, 1, 1, date);
+        Ticket ticketDuplicate = cinema.buy(account, 1,1, date);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void buyIncorrectOldDate() {
+        Account account = new AccountCinema();
+        Cinema cinema = new Cinema3D();
+        cinema.add(new Session3D());
+        Calendar date = Calendar.getInstance();
+        date.set(2010, 10, 10, 23, 00);
+        Ticket ticket = cinema.buy(account, 1, 1, date);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void buyIncorrectRowSeat() {
+        Account account = new AccountCinema();
+        Cinema cinema = new Cinema3D();
+        cinema.add(new Session3D());
+        Calendar date = Calendar.getInstance();
+        date.set(2020, 10, 10, 23, 00);
+        Ticket ticket = cinema.buy(account, -1, 1, date);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void buyIncorrectColumnSeat() {
+        Account account = new AccountCinema();
+        Cinema cinema = new Cinema3D();
+        cinema.add(new Session3D());
+        Calendar date = Calendar.getInstance();
+        date.set(2020, 10, 10, 23, 00);
+        Ticket ticket = cinema.buy(account, 1, -1, date);
     }
 }
