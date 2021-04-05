@@ -3,31 +3,20 @@ package ru.job4j.ood.lsp;
 import java.time.LocalDate;
 import java.util.List;
 
-public class ControlQuality<T extends Food> {
+public class ControlQuality<T extends Store<Food>> {
+    private final List<Store<Food>> listStore;
 
-    private final Store<T> warehouseStore;
-    private final Store<T> shopStore;
-    private final Store<T> trashStore;
-
-    public ControlQuality(Store<T> warehouseStore, Store<T> shopStore, Store<T> trashStore) {
-        this.warehouseStore = warehouseStore;
-        this.shopStore = shopStore;
-        this.trashStore = trashStore;
+    public ControlQuality(List<Store<Food>> listStore) {
+        this.listStore = listStore;
     }
 
-    public void distribute(List<T> listFood, LocalDate currentDate,
+    public void distribute(List<Food> listFood, LocalDate currentDate,
                            int rateWarehouse, int rateShop) {
-        for (T item: listFood) {
-            int percent = item.getPercentRemaining(currentDate);
-            if (percent <= 0) {
-                trashStore.add(item);
-            } else if (percent >= rateWarehouse) {
-                warehouseStore.add(item);
-            } else if (percent >= rateShop) {
-                shopStore.add(item);
-            } else {
-                item.setPrice(item.getPrice() - item.getDiscount());
-                shopStore.add(item);
+        for (Food item: listFood) {
+            for (Store<Food> store : listStore) {
+                if (store.accept(item, currentDate, rateWarehouse, rateShop)) {
+                    break;
+                }
             }
         }
     }
