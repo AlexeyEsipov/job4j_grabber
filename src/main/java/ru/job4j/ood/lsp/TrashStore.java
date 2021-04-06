@@ -13,7 +13,7 @@ public class TrashStore<T extends Food> implements Store<Food> {
     }
 
     @Override
-    public boolean accept(Food food, LocalDate currentDate, int rateWarehouse, int rateShop) {
+    public boolean accept(Food food, LocalDate currentDate) {
         boolean result = false;
         int percent = food.getPercentRemaining(currentDate);
         if (percent <= 0) {

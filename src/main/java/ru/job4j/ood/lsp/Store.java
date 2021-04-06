@@ -7,5 +7,5 @@ public interface Store<T extends Food> {
 
     List<T> getStore();
 
-    boolean accept(T food, LocalDate currentDate, int rateWarehouse, int rateShop);
+    boolean accept(T food, LocalDate currentDate);
 }

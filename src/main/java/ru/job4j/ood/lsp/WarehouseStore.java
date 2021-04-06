@@ -5,8 +5,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WarehouseStore<T extends Food> implements Store<Food> {
-
+    private final int rateStore;
     private final List<Food> listStore = new ArrayList<>();
+
+    public WarehouseStore(int rateStore) {
+        this.rateStore = rateStore;
+    }
 
     @Override
     public List<Food> getStore() {
@@ -14,10 +18,10 @@ public class WarehouseStore<T extends Food> implements Store<Food> {
     }
 
     @Override
-    public boolean accept(Food food, LocalDate currentDate, int rateWarehouse, int rateShop) {
+    public boolean accept(Food food, LocalDate currentDate) {
         boolean result = false;
         int percent = food.getPercentRemaining(currentDate);
-        if (percent >= rateWarehouse) {
+        if (percent > rateStore) {
             result = listStore.add(food);
         }
         return result;
