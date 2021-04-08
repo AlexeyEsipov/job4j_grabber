@@ -18,21 +18,15 @@ public class ControlQuality {
     public void distribute(List<Food> listFood, LocalDate currentDate) {
         Product product;
         for (Food food: listFood) {
-            product = convertFoodToProduct(food, currentDate);
+            ConvertFoodToProduct convert =
+                    new ConvertFoodToProduct(food, currentDate,
+                            rateInitDiscount, remainingShelfLife);
+            product = convert.getProduct();
             for (Store<Food> store : listStore) {
                 if (store.accept(product)) {
                     store.add(product);
                 }
             }
-        }
-    }
-
-    private Product convertFoodToProduct(Food food, LocalDate currentDate) {
-        int percent = remainingShelfLife.getPercentRemaining(food, currentDate);
-        if (percent <= rateInitDiscount && percent > 0) {
-            return new TakeDiscount(food, percent);
-        } else {
-            return new SimpleFood(food, percent);
         }
     }
 }
