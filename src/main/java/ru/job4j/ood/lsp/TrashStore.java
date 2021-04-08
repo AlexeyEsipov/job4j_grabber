@@ -1,11 +1,16 @@
 package ru.job4j.ood.lsp;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TrashStore<T extends Food> implements Store<Food> {
+public class TrashStore implements Store<Food> {
+    private final int rateStore;
     private final List<Food> listStore = new ArrayList<>();
+
+    public TrashStore(int rateStore) {
+        this.rateStore = rateStore;
+
+    }
 
     @Override
     public List<Food> getStore() {
@@ -13,12 +18,17 @@ public class TrashStore<T extends Food> implements Store<Food> {
     }
 
     @Override
-    public boolean accept(Food food, LocalDate currentDate) {
+    public boolean accept(Product product) {
         boolean result = false;
-        int percent = food.getPercentRemaining(currentDate);
-        if (percent <= 0) {
-            result = listStore.add(food);
+        int percent = product.getPercentRemaining();
+        if (percent <= rateStore) {
+            result = true;
         }
         return result;
+    }
+
+    @Override
+    public void add(Product product) {
+        listStore.add(product.getFood());
     }
 }

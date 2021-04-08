@@ -1,7 +1,6 @@
 package ru.job4j.ood.lsp;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 
 public abstract class Food {
     private final String name;
@@ -45,12 +44,6 @@ public abstract class Food {
 
     public LocalDate getExpiryDate() {
         return expiryDate;
-    }
-
-    public int getPercentRemaining(LocalDate currentDate) {
-        int period = (int) ChronoUnit.DAYS.between(getCreateDate(), getExpiryDate());
-        int remaining = (int) ChronoUnit.DAYS.between(currentDate, getExpiryDate());
-        return 100 * remaining / period;
     }
 
     @Override
