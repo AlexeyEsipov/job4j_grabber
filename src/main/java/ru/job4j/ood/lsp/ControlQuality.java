@@ -7,21 +7,21 @@ public class ControlQuality {
     private final List<Store<Food>> listStore;
     private final int rateInitDiscount;
     private final RemainingShelfLife remainingShelfLife;
+    private final ConvertFoodToProduct convert;
 
     public ControlQuality(List<Store<Food>> listStore,
-                          int rateInitDiscount, RemainingShelfLife rsl) {
+                          int rateInitDiscount, RemainingShelfLife rsl,
+                          ConvertFoodToProduct convert) {
         this.listStore = listStore;
         this.rateInitDiscount = rateInitDiscount;
         this.remainingShelfLife = rsl;
+        this.convert = convert;
     }
 
     public void distribute(List<Food> listFood, LocalDate currentDate) {
         Product product;
         for (Food food: listFood) {
-            ConvertFoodToProduct convert =
-                    new ConvertFoodToProduct(food, currentDate,
-                            rateInitDiscount, remainingShelfLife);
-            product = convert.getProduct();
+            product = convert.getProduct(food, currentDate, rateInitDiscount, remainingShelfLife);
             for (Store<Food> store : listStore) {
                 if (store.accept(product)) {
                     store.add(product);

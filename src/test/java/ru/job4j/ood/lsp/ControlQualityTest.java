@@ -12,6 +12,7 @@ public class ControlQualityTest {
     @Test
     public void distributeWhen1Trash2Discount3Warehouse4Shop() {
         RemainingShelfLife rsl = new RemainingShelfLife();
+        ConvertFoodToProduct convert = new ConvertFoodToProduct();
         Store<Food> warehouseStore = new WarehouseStore(75);
         Store<Food> shopStore = new ShopStore(75);
         Store<Food> trashStore = new TrashStore(0);
@@ -30,7 +31,7 @@ public class ControlQualityTest {
                 50.00, 15.00);
         List<Food> listFood = List.of(w1, w2, b1, b2);
 
-        ControlQuality cQ = new ControlQuality(listStore, 25, rsl);
+        ControlQuality cQ = new ControlQuality(listStore, 25, rsl, convert);
         cQ.distribute(listFood, LocalDate.of(2021, 4, 3));
         assertEquals("water1", trashStore.getStore().get(0).getName());
         assertEquals(20.0, shopStore.getStore().get(0).getPrice(), 0.0001d);
