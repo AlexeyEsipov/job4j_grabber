@@ -15,6 +15,9 @@ public interface ParkingArea {
     // Пометить место как свободное
     boolean emptySpace(Ticket ticket);
 
+    // Пометить место как занятое
+    boolean takeThePlaceOf(Ticket ticket);
+
     // Сообщить регистрационные номера находящихся на парковке легковых автомобилей
     String[] getCarStatus();
 

@@ -11,5 +11,14 @@ public interface Vehicle {
     // статус автомобиля:
     // - автомобиль на парковке - true
     // - автомобиль не на парковке - false
-    boolean onParking();
+    boolean isParking();
+
+    // изменить статус автомобиля - припаркован: true; - неприпаркован: false
+    void setParking(boolean parking);
+
+    // получить талон с указанием парковочных мест
+    void acceptTicket(Ticket ticket);
+
+    // вернуть талон при покидании парковки
+    Ticket returnTicket();
 }

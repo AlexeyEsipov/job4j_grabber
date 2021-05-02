@@ -12,28 +12,29 @@ public class CarParkingTest {
     private final Vehicle truck2 = new Truck(2, "truck2", false);
     private final Vehicle truck3 = new Truck(3, "truck3", false);
     private final Vehicle truck5 = new Truck(2, "truck5", false);
+    private final PlacementLogic logic = new Logic();
 
     @Test     //когда нет грузовго паркинга, а на легковом недостаточно мест для грузовика
     public void isCarSpaceWhenNotTruckSpaceAndNotCarSpace() {
-        CarParking carParking = new CarParking(2, 0);
+        CarParking carParking = new CarParking(2, 0, logic);
         assertFalse(carParking.isCarSpace(truck3));
     }
 
     @Test   // когда есть место на грузовом паркинге
     public void isCarSpaceWhenTruckSpaceOK() {
-        CarParking carParking = new CarParking(2, 1);
+        CarParking carParking = new CarParking(2, 1, logic);
         assertTrue(carParking.isCarSpace(truck2));
     }
 
     @Test   //когда есть место на легковом паркинге для легкового авто
     public void isCarSpaceWhenCarSpaceOK() {
-        CarParking carParking = new CarParking(2, 1);
+        CarParking carParking = new CarParking(2, 1, logic);
         assertTrue(carParking.isCarSpace(car2));
     }
 
     @Test   // когда грузовой паркинг занят, а на легковом недостаточно места для грузовика
     public void isCarSpaceWhen1TruckOKBut2TruckNotOK() {
-        CarParking carParking = new CarParking(1, 1);
+        CarParking carParking = new CarParking(1, 1, logic);
         Ticket ticket = new Card("Truck", new int[]{1, 0}, "truck1");
         carParking.takeThePlaceOf(ticket);
         assertFalse(carParking.isCarSpace(truck3));
@@ -41,7 +42,7 @@ public class CarParkingTest {
 
     @Test   // когда грузовой паркинг занят, а на легковом достаточно места для грузовика
     public void isCarSpaceWhen1TruckOKBut2TruckOnlyCarPlaces() {
-        CarParking carParking = new CarParking(3, 1);
+        CarParking carParking = new CarParking(3, 1, logic);
         Ticket ticket = new Card("Truck", new int[]{1, 0}, "truck1");
         carParking.takeThePlaceOf(ticket);
         assertTrue(carParking.isCarSpace(truck3));
@@ -49,7 +50,7 @@ public class CarParkingTest {
 
     @Test   // выделить место под грузовик
     public void getCarSpaceWhen1TruckOK() {
-        CarParking carParking = new CarParking(2, 1);
+        CarParking carParking = new CarParking(2, 1, logic);
         Ticket ticket = carParking.getCarSpace(truck1);
         String expectedDivision = "Truck";
         String expectedNumber = "truck1";
@@ -61,7 +62,7 @@ public class CarParkingTest {
 
     @Test   // выделить место под грузовик на легковом паркинге, когда грузовой паркинг занят
     public void getCarSpaceWhen2TruckOK() {
-        CarParking carParking = new CarParking(2, 1);
+        CarParking carParking = new CarParking(2, 1, logic);
         Ticket ticket1 = carParking.getCarSpace(truck3);
         carParking.takeThePlaceOf(ticket1);
         Ticket ticket5 = carParking.getCarSpace(truck5);
@@ -75,7 +76,7 @@ public class CarParkingTest {
 
     @Test   // пометить место свободным когда автомобиль покинул паркинг
     public void whenEmptySpace() {
-        CarParking carParking = new CarParking(2, 1);
+        CarParking carParking = new CarParking(2, 1, logic);
         Ticket ticket1 = carParking.getCarSpace(truck1);
         // размещаем автомобиль
         carParking.takeThePlaceOf(ticket1);
