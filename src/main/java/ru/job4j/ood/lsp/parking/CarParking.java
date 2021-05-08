@@ -6,7 +6,9 @@ import java.util.List;
 public class CarParking implements ParkingArea {
 
     private final int[] carArray;
-    private final int[] truckArray;
+    private int countFreeTruckPark;
+    private int countFreeCarPark;
+
     private final PlacementLogic logic;
 
     private final List<String> carList = new ArrayList<>();
@@ -14,8 +16,9 @@ public class CarParking implements ParkingArea {
 
     public CarParking(int carArray, int truckArray, PlacementLogic logic) {
         this.carArray = new int[carArray];
-        this.truckArray = new int[truckArray];
         this.logic = logic;
+        this.countFreeTruckPark = truckArray;
+        this.countFreeCarPark = carArray;
     }
 
     // этот метод сообщает, есть ли свободное место
@@ -25,8 +28,7 @@ public class CarParking implements ParkingArea {
         validateVehicle(vehicle);
 
         int size = vehicle.getSize();
-
-        return logic.ability(size, carArray, truckArray);
+        return logic.ability(size, carArray, countFreeCarPark, countFreeTruckPark);
     }
 
     // этот метод формирует парковочный талон с указанием парковочных мест
@@ -40,8 +42,9 @@ public class CarParking implements ParkingArea {
         int size = vehicle.getSize();
         int[] places = new int[size];
 
-        if (logic.ability(size, carArray, truckArray)) {
-            Ticket card = logic.getContinuousPlaces(size, carArray, truckArray);
+        if (logic.ability(size, carArray, countFreeCarPark, countFreeTruckPark)) {
+            Ticket card = logic.getContinuousPlaces(size, carArray,
+                    countFreeCarPark, countFreeTruckPark);
             division = card.getDivision();
             places = card.getPlaces();
         }
@@ -51,43 +54,33 @@ public class CarParking implements ParkingArea {
     // при убытии автомобиля на основании возвращенного парковочного талона
     // помечаются свободные места
     @Override
-    public boolean emptySpace(Ticket ticket) {
+    public void emptySpace(Ticket ticket) {
 
         validateTicket(ticket);
 
-        boolean result = false;
         String division = ticket.getDivision();
         String carNumber = ticket.getCarNumber();
         int[] places = ticket.getPlaces();
 
         if (division.equals("Car")) {
             for (int i = 0; i < places.length; i++) {
-                if (carArray[places[i] - 1] == 0) {
-                    return false;
-                }
                 carArray[places[i] - 1] = 0;
+                countFreeCarPark++;
                 carList.remove(carNumber);
-                result = true;
             }
         } else {
-            if (truckArray[places[0] - 1] == 0) {
-                return false;
-            }
-            truckArray[places[0] - 1] = 0;
+            countFreeTruckPark++;
             truckList.remove(carNumber);
-            result = true;
         }
-        return result;
     }
 
     // при прибытии автомобиля на основании парковочного талона
     // помечаются занятые места
     @Override
-    public boolean takeThePlaceOf(Ticket ticket) {
+    public void takeThePlaceOf(Ticket ticket) {
 
         validateTicket(ticket);
 
-        boolean result = false;
         String division = ticket.getDivision();
         String carNumber = ticket.getCarNumber();
         int[] places = ticket.getPlaces();
@@ -98,14 +91,12 @@ public class CarParking implements ParkingArea {
                     carList.add(carNumber);
                 }
                 carArray[places[j] - 1] = 1;
+                countFreeCarPark--;
             }
-            result = true;
         } else {
-            truckArray[places[0] - 1] = 1;
+            countFreeTruckPark--;
             truckList.add(carNumber);
-            result = true;
         }
-        return result;
     }
 
     @Override
