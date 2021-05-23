@@ -1,0 +1,58 @@
+// В данном примере нарушение принципа OCP состоит в том, что при возникновении необходимости
+// использовать другой инструмент необходимо изменять код класса Bard.
+
+public class Bard {
+    private Guitar guitar;
+
+    public Bard(Guitar guitar) {
+        this.guitar = guitar;
+    }
+
+    public void play() {
+        guitar.play();
+    }
+}
+
+public class Guitar {
+    public void play() {
+    System.out.println("Play Guitar!");
+    }
+}
+
+// Чтобы соответствовать принципу OCP, необходимо вместо конкретного класса инструмента
+// (private Guitar) использовать интерфейс.
+
+public class Bard {
+    private Instrument instrument;
+
+    public Bard(Instrument instrument) {
+        this.instrument = instrument;
+    }
+
+    public void play() {
+        instrument.play();
+    }
+}
+
+public interface Instrument {
+    void play();
+}
+
+// Теперь можно использовать любой инструмент, реализующий нужный интерфейс
+
+public class Guitar implements Instrument {
+
+    @Override
+    public void play() {
+       System.out.println("Play Guitar!");
+    }
+}
+
+public class Lute implements Instrument {
+
+    @Override
+    public void play() {
+        System.out.println("Play Lute!");
+    }
+}
+

@@ -1,0 +1,61 @@
+//класс Cook нарушает принцип OCP, так как при возникновении необходимости "научить повара" готовить
+//другое блюдо придется изменять код.
+
+public class Cook {
+    private String name;
+
+    public Cook(String name) {
+        this.name = name;
+    }
+
+    public void makeDinner() {
+        System.out.println("Чистим картошку");
+        System.out.println("Ставим почищенную картошку на огонь");
+        System.out.println("Сливаем остатки воды, разминаем варенный картофель в пюре");
+        System.out.println("Посыпаем пюре специями и зеленью");
+        System.out.println("Картофельное пюре готово");
+    }
+}
+
+//для устранения этой проблемы вынесем логику приготоволения каждого from в отдельный класс,
+//который, в свою очередь, будет реализовывать единый интерфейс, а исходный класс Cook изменим таким образом,
+//чтобы передавать ему нужный объект ("блюдо") в аргументах метода.
+
+public interface IMeal {
+    void make();
+}
+
+public class PotatoMeal implements IMeal {
+    @Override
+    public void make() {
+        System.out.println("Чистим картошку");
+        System.out.println("Ставим почищенную картошку на огонь");
+        System.out.println("Сливаем остатки воды, разминаем варенный картофель в пюре");
+        System.out.println("Посыпаем пюре специями и зеленью");
+        System.out.println("Картофельное пюре готово");
+    }
+}
+
+public class SaladMeal implements IMeal {
+    @Override
+    public void make() {
+        System.out.println("Нарезаем помидоры и огурцы");
+        System.out.println("Посыпаем зеленью, солью и специями");
+        System.out.println("Поливаем подсолнечным маслом");
+        System.out.println("Салат готов");
+    }
+}
+
+// в итоге исходный класс получает вид
+
+public class Cook {
+    private String name;
+
+    public Cook(String name) {
+        this.name = name;
+    }
+
+    public void makeDinner(IMeal meal) {
+        meal.make();
+    }
+}
