@@ -1,0 +1,61 @@
+// В данном примере нарушение принципа LSP состоит в том, что в классе-наследнике метод public boolean validate()
+// переопределен таким образом, что проверяется значение другой переменной, то есть происходит ослабление постусловий
+
+public class Aircraft {
+    private String name;
+    private int countEngine;
+
+    public Aircraft(String name, int countEngine) {
+        this.name = name;
+        this.countEngine = countEngine;
+    }
+
+    public Aircraft() {
+    }
+
+    public void printModel() {
+        System.out.println("Метод выводит в консоль модель самолета.");
+    }
+
+    public boolean validate() {
+        if (countEngine == 3) {
+            return false;
+        }
+        return true;
+    }
+}
+
+public class Airbus extends Aircraft {
+    private String name;
+    private int countEngine;
+
+    public Airbus(String name, int countEngine) {
+        this.name = name;
+        this.countEngine = countEngine;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+        public void printModel() {
+            System.out.println("Модель самолета: " + name);
+    }
+
+    @Override
+    public String toString() {
+        return "Airbus{"
+                + "name='" + name + '\''
+                + '}';
+    }
+
+    @Override
+        public boolean validate() {
+            return name.startsWith("A");
+        }
+}
