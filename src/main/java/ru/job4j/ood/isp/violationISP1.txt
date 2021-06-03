@@ -1,0 +1,35 @@
+// Интерфейс Ship определяет методы, которые могут быть реализованы объектом, представляющим морское судно.
+// Нарушение принципа ISP состоит в том, что различные суда должны будут реализовывать несвойственные им методы.
+// Например, военный корабль должен реализовывать методы, предназначенные для торгового судна, и наоборот.
+
+public interface Ship {
+    void moveRight();
+    void moveLeft();
+    void moveForward();
+    void moveBack();
+    void attack();
+    void convoy();
+    void loadCargo();
+    void unLoadCargo();
+}
+
+// Решением данной проблемы является разделение интерфейсов
+
+public interface Vessel {
+    void moveRight();
+    void moveLeft();
+    void moveForward();
+    void moveBack();
+}
+
+public interface WarShip {
+    void attack();
+    void convoy();
+}
+
+public interface CommercialShip {
+    void loadCargo();
+    void unLoadCargo();
+}
+
+
