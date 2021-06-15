@@ -1,0 +1,74 @@
+// Система изменения температуры состоит из модулей нижнего уровня - классов Thermometer и Burner -
+// и модуля верхнего уровня Regulator. В текущем виде верхний модуль зависит от реализации нижних, что
+// является нарушением принципа DIP.
+
+public class Thermometer {
+    public double read() {
+        return Math.random() * 100;
+    }
+}
+
+public class Burner {
+    public void engage() {
+        System.out.println("Engage");
+    }
+    public void disengage() {
+        System.out.println("Disengage");
+    }
+}
+
+public class Regulator {
+    public void regulate(int maxTemp, int minTemp, Thermometer thermometer, Burner burner) {
+        System.out.println();
+        double existTemp = thermometer.read();
+        if (existTemp > maxTemp) {
+            burner.disengage();
+        }
+        if (existTemp < minTemp) {
+            burner.engage();
+        }
+    }
+}
+
+// Решением будет являться введение соответствующих интерфейсов - IHeat и IThermo.
+// В результате модуль верхнего уровня не зависит от реализации модулей нижних уровней.
+
+public interface IHeat {
+    void engage();
+    void disengage();
+}
+
+public interface IThermo {
+    double read();
+}
+
+public class Thermometer implements IThermo {
+    @Override
+    public double read() {
+        return Math.random() * 100;
+    }
+}
+
+public class Burner implements IHeat {
+    @Override
+    public void engage() {
+        System.out.println("Engage");
+    }
+    @Override
+    public void disengage() {
+        System.out.println("Disengage");
+    }
+}
+
+public class Regulator {
+    public void regulate(int maxTemp, int minTemp, IThermo thermometer, IHeat burner) {
+        System.out.println();
+        double existTemp = thermometer.read();
+        if (existTemp > maxTemp) {
+            burner.disengage();
+        }
+        if (existTemp < minTemp) {
+            burner.engage();
+        }
+    }
+}

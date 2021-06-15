@@ -1,0 +1,53 @@
+// Существует класс А и класс B, причем класс А зависит от класса В, так как имеет
+// поле этого типа (private ClassB b;)
+// и это, соответственно, является нарушением принципа DIP
+
+public class ClassB {
+    private String s;
+    public ClassB(String s) {
+        this.s = s;
+    }
+    public String getS() {
+        return s;
+    }
+}
+
+public class ClassA {
+    private ClassB b;
+    public ClassA(ClassB b) {
+        this.b = b;
+    }
+    public void print(ClassB b) {
+        System.out.println(b.getS());
+    }
+}
+
+// Решением проблемы является создание интерфейса для класса В, и замена поля
+// типа конкретного класса на поле типа интерфейса
+
+public interface Iabc {
+    String getS();
+}
+
+public class ClassB implements Iabc {
+    private String s;
+    public ClassB(String s) {
+        this.s = s;
+    }
+    @Override
+    public String getS() {
+        return s;
+    }
+}
+
+// теперь класс А не зависит от реализации класса В, так как произведена замена
+// поля типа класса В на поле типа интерфейса (private Iabc b;)
+public class ClassA {
+    private Iabc b;
+    public ClassA(Iabc b) {
+        this.b = b;
+    }
+    public void print(Iabc b) {
+        System.out.println(b.getS());
+    }
+}
