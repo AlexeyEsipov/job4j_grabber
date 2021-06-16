@@ -1,14 +1,13 @@
 package ru.job4j.ood.srp;
 
 public class Product {
-    String name = " ";
-    int value = 0;
+    private String name = " ";
+    private int value = 0;
 
     public Product(String name, int value) {
         this.name = name;
         this.value = value;
     }
-
 
     public String getName() {
         return name;

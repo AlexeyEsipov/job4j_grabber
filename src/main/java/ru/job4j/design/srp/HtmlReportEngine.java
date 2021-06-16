@@ -8,6 +8,7 @@ public class HtmlReportEngine implements Report {
     public HtmlReportEngine(Store store) {
         this.store = store;
     }
+
     @Override
     public String generate(Predicate<Employee> filter) {
         StringBuilder text = new StringBuilder();
