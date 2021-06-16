@@ -3,8 +3,6 @@ package ru.job4j.design.srp;
 import org.junit.Test;
 
 import java.util.Calendar;
-import java.util.Comparator;
-
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
