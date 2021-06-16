@@ -9,7 +9,7 @@ import static org.junit.Assert.*;
 public class MLReportEngineTest {
     @Test
     public void whenHTMLGenerated() {
-        MemStore store = new MemStore();
+        Store store = new MemStore();
         Calendar now = Calendar.getInstance();
         Employee worker = new Employee("Ivan", now, now, 100);
         store.add(worker);
