@@ -3,7 +3,7 @@ package ru.job4j.design.srp;
 import java.util.function.Predicate;
 
 public class HtmlReportEngine implements Report {
-    private Store store;
+    final private Store store;
 
     public HtmlReportEngine(Store store) {
         this.store = store;

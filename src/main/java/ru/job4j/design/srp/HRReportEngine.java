@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.function.Predicate;
 
 public class HRReportEngine implements Report {
-    private Store store;
-    private Comparator<Employee> comparator;
+    final private Store store;
+    final private Comparator<Employee> comparator;
 
     public HRReportEngine(Store store, Comparator<Employee> comparator) {
         this.store = store;

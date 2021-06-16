@@ -3,10 +3,10 @@ package ru.job4j.design.srp;
 import java.util.function.Predicate;
 
 public class MLReportEngine implements Report {
-    private Store store;
-    private String metaHeader;
+    final private Store store;
+    final private String metaHeader;
     private String body;
-    private String footer;
+    final private String footer;
 
     public MLReportEngine(Store store, String metaHeaderTemplate,
                           String bodyTemplate, String footerTemplate) {
