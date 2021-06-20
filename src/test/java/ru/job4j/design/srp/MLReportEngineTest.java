@@ -3,6 +3,8 @@ package ru.job4j.design.srp;
 import org.junit.Test;
 
 import java.util.Calendar;
+
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class MLReportEngineTest {
@@ -18,15 +20,26 @@ public class MLReportEngineTest {
         String body = "${name};${hired};${fired};${salary};";
         String footer = "</html>";
         Report engine = new MLReportEngine(store, header, body, footer);
-        String expect = "<!DOCTYPE html>"
-                + "<html>"
-                + "Name; Hired; Fired; Salary;"
-                + "Ivan;"
-                + String.format("%1$td.%1$tm.%1$tY", worker.getHired()) + ";"
-                + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ";"
-                + "    100,00;"
-                + "</html>";
-        assertEquals(engine.generate(em -> true), expect);
+        StringBuilder expect = new StringBuilder()
+        .append("<!DOCTYPE html>")
+                .append("<html>")
+                .append("Name; Hired; Fired; Salary;")
+                        .append("Ivan;")
+                .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
+                .append(";")
+                .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
+                .append(";")
+                .append("    100,00;")
+                .append("</html>");
+//        String expect = "<!DOCTYPE html>"
+//                + "<html>"
+//                + "Name; Hired; Fired; Salary;"
+//                + "Ivan;"
+//                + String.format("%1$td.%1$tm.%1$tY", worker.getHired()) + ";"
+//                + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ";"
+//                + "    100,00;"
+//                + "</html>";
+        assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
     @Test
