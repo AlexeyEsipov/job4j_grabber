@@ -12,7 +12,7 @@ public class MLReportEngineTest {
     public void whenHTMLGenerated() {
         Store store = new MemStore();
         Calendar now = Calendar.getInstance();
-        Employee worker = new Employee("Ivan", now, now, 100);
+        Employee worker = new Employee("Ivan", now, now, 100.00);
         store.add(worker);
         String header = "<!DOCTYPE html>"
                 + "<html>"
@@ -24,7 +24,7 @@ public class MLReportEngineTest {
         .append("<!DOCTYPE html>")
                 .append("<html>")
                 .append("Name; Hired; Fired; Salary;")
-                        .append("Ivan;")
+                .append("Ivan;")
                 .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
                 .append(";")
                 .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
@@ -38,7 +38,7 @@ public class MLReportEngineTest {
     public void whenXMLGenerated() {
         Store store = new MemStore();
         Calendar now = Calendar.getInstance();
-        Employee worker = new Employee("Ivan", now, now, 100);
+        Employee worker = new Employee("Ivan", now, now, 100.00);
         store.add(worker);
         String header = "<?xml version=\"1.1\" encoding=\"UTF-8\" ?>"
                 + "<employees>";
@@ -71,7 +71,7 @@ public class MLReportEngineTest {
     public void whenJSONGenerated() {
         Store store = new MemStore();
         Calendar now = Calendar.getInstance();
-        Employee worker = new Employee("Ivan", now, now, 100);
+        Employee worker = new Employee("Ivan", now, now, 100.00);
         store.add(worker);
         String header = "";
         String body = "{"
@@ -82,12 +82,13 @@ public class MLReportEngineTest {
                 + "}";
         String footer = "";
         Report engine = new MLReportEngine(store, header, body, footer);
-        String expect = "{"
-                + "\"name\":Ivan,"
-                + "\"hired\":" + String.format("%1$td.%1$tm.%1$tY", worker.getHired()) + ","
-                + "\"fired\":" + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ","
-                + "\"salary\":    100,00"
-                + "}";
-        assertEquals(engine.generate(em -> true), expect);
+        StringBuilder expect = new StringBuilder()
+                .append("{\"name\":Ivan,")
+                .append("\"hired\":")
+                .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
+                .append(",\"fired\":")
+                .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
+                .append(",\"salary\":    100,00}");
+        assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 }
