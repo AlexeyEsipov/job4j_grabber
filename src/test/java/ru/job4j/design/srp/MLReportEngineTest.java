@@ -42,6 +42,7 @@ public class MLReportEngineTest {
         String body = "${name};${hired};${fired};${salary};";
         String footer = "</html>";
         Report engine = new MLReportEngine(store, header, body, footer);
+        String actual = engine.generate(em -> true);
         StringBuilder expect = new StringBuilder()
                 .append("<!DOCTYPE html>")
                 .append("<html>")
@@ -53,7 +54,8 @@ public class MLReportEngineTest {
                 .append(";")
                 .append("    100,00;")
                 .append("</html>");
-        assertThat(footer, is(footer));
+        String stringExpect = expect.toString();
+        assertThat(actual, is(stringExpect));
     }
 
     @Test
