@@ -20,19 +20,18 @@ public class MLReportEngineTest {
         String body = "${name};${hired};${fired};${salary};";
         String footer = "</html>";
         Report engine = new MLReportEngine(store, header, body, footer);
-        StringBuilder expect = new StringBuilder()
-                .append("<!DOCTYPE html>")
-                .append("<html>")
-                .append("Name; Hired; Fired; Salary;")
-                .append("Ivan;")
-                .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
-                .append(";")
-                .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
-                .append(";")
-                .append(String.format("%10.2f", worker.getSalary()))
-                .append(";")
-                .append("</html>");
-        assertThat(engine.generate(em -> true), is(expect.toString()));
+        String expect = "<!DOCTYPE html>"
+                + "<html>"
+                + "Name; Hired; Fired; Salary;"
+                + "Ivan;"
+                + String.format("%1$td.%1$tm.%1$tY", worker.getHired())
+                + ";"
+                + String.format("%1$td.%1$tm.%1$tY", worker.getFired())
+                + ";"
+                + String.format("%10.2f", worker.getSalary())
+                + ";"
+                + "</html>";
+        assertThat(engine.generate(em -> true), is(expect));
     }
 
     @Test
@@ -51,23 +50,22 @@ public class MLReportEngineTest {
                 + "</employee>";
         String footer = "</employees>";
         Report engine = new MLReportEngine(store, header, body, footer);
-        StringBuilder expect = new StringBuilder()
-                .append("<?xml version=\"1.1\" encoding=\"UTF-8\" ?>")
-                .append("<employees>")
-                .append("<employee>")
-                .append("<name>Ivan</name>")
-                .append("<hired>")
-                .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
-                .append("</hired>")
-                .append("<fired>")
-                .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
-                .append("</fired>")
-                .append("<salary>")
-                .append(String.format("%10.2f", worker.getSalary()))
-                .append("</salary>")
-                .append("</employee>")
-                .append("</employees>");
-        assertThat(engine.generate(em -> true), is(expect.toString()));
+        String expect = "<?xml version=\"1.1\" encoding=\"UTF-8\" ?>"
+                + "<employees>"
+                + "<employee>"
+                + "<name>Ivan</name>"
+                + "<hired>"
+                + String.format("%1$td.%1$tm.%1$tY", worker.getHired())
+                + "</hired>"
+                + "<fired>"
+                + String.format("%1$td.%1$tm.%1$tY", worker.getFired())
+                + "</fired>"
+                + "<salary>"
+                + String.format("%10.2f", worker.getSalary())
+                + "</salary>"
+                + "</employee>"
+                + "</employees>";
+        assertThat(engine.generate(em -> true), is(expect));
     }
 
     @Test
@@ -85,15 +83,14 @@ public class MLReportEngineTest {
                 + "}";
         String footer = "";
         Report engine = new MLReportEngine(store, header, body, footer);
-        StringBuilder expect = new StringBuilder()
-                .append("{\"name\":Ivan,")
-                .append("\"hired\":")
-                .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
-                .append(",\"fired\":")
-                .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
-                .append(",\"salary\":")
-                .append(String.format("%10.2f", worker.getSalary()))
-                .append("}");
-        assertThat(engine.generate(em -> true), is(expect.toString()));
+        String expect = "{\"name\":Ivan,"
+                + "\"hired\":"
+                + String.format("%1$td.%1$tm.%1$tY", worker.getHired())
+                + ",\"fired\":"
+                + String.format("%1$td.%1$tm.%1$tY", worker.getFired())
+                + ",\"salary\":"
+                + String.format("%10.2f", worker.getSalary())
+                + "}";
+        assertThat(engine.generate(em -> true), is(expect));
     }
 }
