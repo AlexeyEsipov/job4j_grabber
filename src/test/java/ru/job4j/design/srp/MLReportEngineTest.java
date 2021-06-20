@@ -52,7 +52,7 @@ public class MLReportEngineTest {
                 .append(";")
                 .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
                 .append(";")
-                .append("    100,00;")
+                .append("    100.00;")
                 .append("</html>");
         String stringExpect = expect.toString().intern();
         assertEquals(actual, stringExpect);
