@@ -42,7 +42,7 @@ public class MLReportEngineTest {
         String body = "${name};${hired};${fired};${salary};";
         String footer = "</html>";
         Report engine = new MLReportEngine(store, header, body, footer);
-        String actual = engine.generate(em -> true).toString().intern();
+//        String actual = engine.generate(em -> true).toString().intern();
         StringBuilder expect = new StringBuilder()
                 .append("<!DOCTYPE html>")
                 .append("<html>")
@@ -52,10 +52,11 @@ public class MLReportEngineTest {
                 .append(";")
                 .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
                 .append(";")
-                .append("    100.00;")
+                .append(String.format("%10.2f", worker.getSalary()))
+                .append(";")
                 .append("</html>");
-        String stringExpect = expect.toString().intern();
-        assertEquals(actual, stringExpect);
+//        String stringExpect = expect.toString().intern();
+        assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
     @Test
