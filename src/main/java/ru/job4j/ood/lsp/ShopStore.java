@@ -17,6 +17,11 @@ public class ShopStore implements Store<Food> {
     }
 
     @Override
+    public void clearStore() {
+        listStore.clear();
+    }
+
+    @Override
     public boolean accept(Product product) {
         boolean result = false;
         int percent = product.getPercentRemaining();

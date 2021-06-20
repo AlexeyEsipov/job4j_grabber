@@ -18,6 +18,11 @@ public class TrashStore implements Store<Food> {
     }
 
     @Override
+    public void clearStore() {
+        listStore.clear();
+    }
+
+    @Override
     public boolean accept(Product product) {
         boolean result = false;
         int percent = product.getPercentRemaining();
@@ -29,6 +34,6 @@ public class TrashStore implements Store<Food> {
 
     @Override
     public void add(Product product) {
-        listStore.add(product.getFood());
+        //listStore.add(product.getFood());
     }
 }

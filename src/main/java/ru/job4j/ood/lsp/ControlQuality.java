@@ -1,6 +1,7 @@
 package ru.job4j.ood.lsp;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ControlQuality {
@@ -28,5 +29,14 @@ public class ControlQuality {
                 }
             }
         }
+    }
+
+    public void resort(LocalDate resortDate) {
+        List<Food> listFood = new ArrayList<>();
+        for (Store<Food> store : listStore) {
+            listFood.addAll(store.getStore());
+            store.clearStore();
+        }
+        distribute(listFood, resortDate);
     }
 }
