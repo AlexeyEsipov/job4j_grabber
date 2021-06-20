@@ -31,14 +31,6 @@ public class MLReportEngineTest {
                 .append(";")
                 .append("    100,00;")
                 .append("</html>");
-//        String expect = "<!DOCTYPE html>"
-//                + "<html>"
-//                + "Name; Hired; Fired; Salary;"
-//                + "Ivan;"
-//                + String.format("%1$td.%1$tm.%1$tY", worker.getHired()) + ";"
-//                + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ";"
-//                + "    100,00;"
-//                + "</html>";
         assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
@@ -58,16 +50,21 @@ public class MLReportEngineTest {
                 + "</employee>";
         String footer = "</employees>";
         Report engine = new MLReportEngine(store, header, body, footer);
-        String expect = "<?xml version=\"1.1\" encoding=\"UTF-8\" ?>"
-                + "<employees>"
-                + "<employee>"
-                + "<name>Ivan</name>"
-                + "<hired>" + String.format("%1$td.%1$tm.%1$tY", worker.getHired()) + "</hired>"
-                + "<fired>" + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + "</fired>"
-                + "<salary>    100,00</salary>"
-                + "</employee>"
-                + "</employees>";
-        assertEquals(engine.generate(em -> true), expect);
+        StringBuilder expect = new StringBuilder()
+                .append("<?xml version=\"1.1\" encoding=\"UTF-8\" ?>")
+                .append("<employees>")
+                .append("<employee>")
+                .append("<name>Ivan</name>")
+                .append("<hired>")
+                .append(String.format("%1$td.%1$tm.%1$tY", worker.getHired()))
+                .append("</hired>")
+                .append("<fired>")
+                .append(String.format("%1$td.%1$tm.%1$tY", worker.getFired()))
+                .append("</fired>")
+                .append("<salary>    100,00</salary>")
+                .append("</employee>")
+                .append("</employees>");
+        assertThat(engine.generate(em -> true), is(expect.toString()));
     }
 
     @Test
