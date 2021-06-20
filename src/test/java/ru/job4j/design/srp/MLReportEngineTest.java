@@ -3,7 +3,6 @@ package ru.job4j.design.srp;
 import org.junit.Test;
 
 import java.util.Calendar;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.*;
 
 public class MLReportEngineTest {
@@ -27,9 +26,7 @@ public class MLReportEngineTest {
                 + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ";"
                 + "    100,00;"
                 + "</html>";
-//        assertEquals(expect, expect);
         assertEquals(engine.generate(em -> true), expect);
-//        assertThat(engine.generate(em -> true), is(expect));
     }
 
     @Test
@@ -57,7 +54,7 @@ public class MLReportEngineTest {
                 + "<salary>    100,00</salary>"
                 + "</employee>"
                 + "</employees>";
-        assertThat(engine.generate(em -> true), is(expect));
+        assertEquals(engine.generate(em -> true), expect);
     }
 
     @Test
@@ -81,6 +78,6 @@ public class MLReportEngineTest {
                 + "\"fired\":" + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ","
                 + "\"salary\":    100,00"
                 + "}";
-        assertThat(engine.generate(em -> true), is(expect));
+        assertEquals(engine.generate(em -> true), expect);
     }
 }
