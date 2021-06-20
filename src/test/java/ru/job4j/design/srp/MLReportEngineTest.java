@@ -27,7 +27,9 @@ public class MLReportEngineTest {
                 + String.format("%1$td.%1$tm.%1$tY", worker.getFired()) + ";"
                 + "    100,00;"
                 + "</html>";
-        assertThat(engine.generate(em -> true), is(expect));
+//        assertEquals(expect, expect);
+        assertEquals(engine.generate(em -> true), expect);
+//        assertThat(engine.generate(em -> true), is(expect));
     }
 
     @Test
