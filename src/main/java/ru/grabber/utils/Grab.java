@@ -1,5 +1,4 @@
-package ru.grabber;
-
+package ru.grabber.utils;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 

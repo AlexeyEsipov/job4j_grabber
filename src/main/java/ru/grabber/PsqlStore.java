@@ -1,87 +1,98 @@
 package ru.grabber;
 
-import java.sql.*;
-import java.time.LocalDate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.grabber.utils.Post;
+import ru.grabber.utils.Store;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
+    private static final Logger LOG = LoggerFactory.getLogger(PsqlStore.class.getName());
     private Connection cnn;
 
-    public PsqlStore(Properties config) {
+    public PsqlStore(Properties cfg) throws SQLException {
         try {
-            Class.forName(config.getProperty("jdbc.driver"));
-        } catch (ClassNotFoundException classNotFoundException) {
-            classNotFoundException.printStackTrace();
+            Class.forName(cfg.getProperty("driver_class"));
+        } catch (Exception e) {
+            throw new IllegalStateException(e);
         }
-        try {
-            this.cnn = DriverManager.getConnection(
-                    config.getProperty("jdbc.url"),
-                    config.getProperty("jdbc.username"),
-                    config.getProperty("jdbc.password")
-                );
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        cnn = DriverManager.getConnection(
+                cfg.getProperty("url"),
+                cfg.getProperty("login"),
+                cfg.getProperty("password")
+        );
     }
 
     @Override
-    public void save(Post p) {
+    public void save(Post post) {
         try (PreparedStatement statement =
-                     cnn.prepareStatement(
-                             "insert into post (name, text, link, created) "
-                                     + "values (?, ?, ?, ?) on conflict do nothing")) {
-            statement.setString(1, p.getName());
-            statement.setString(2, p.getText());
-            statement.setString(3, p.getUrl());
-            statement.setDate(4, java.sql.Date.valueOf(p.getCreatedDate()));
-            statement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
+             cnn.prepareStatement("insert into post(name, link, text, created) values (?, ?, ?, ?)"
+                     + "ON CONFLICT (link) DO NOTHING;", Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, post.getTitle());
+            statement.setString(2, post.getLink());
+            statement.setString(3, post.getDescription());
+            statement.setTimestamp(4, Timestamp.valueOf(post.getCreated()));
+            statement.execute();
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    post.setId(generatedKeys.getInt(1));
+                }
+            }
+        } catch (Exception e) {
+            LOG.error("Ошибка создания вакансии", e);
         }
     }
 
     @Override
     public List<Post> getAll() {
-        List<Post> postList = new ArrayList<>();
+        List<Post> posts = new ArrayList<>();
         try (PreparedStatement statement = cnn.prepareStatement("select * from post")) {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    Post p = new Post(resultSet.getInt("id"),
-                            resultSet.getString("link"),
-                            resultSet.getString("name"),
-                            resultSet.getString("text"),
-                            LocalDate.parse(resultSet.getString("created"))
-                            );
-                    postList.add(p);
+                    posts.add(resulted(resultSet));
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка получения списка всех вакансий", e);
         }
-        return postList;
+        return posts;
     }
 
     @Override
     public Post findById(int id) {
-        Post post = new Post(-1, "h", "d", "t", LocalDate.parse("2000-01-01"));
+        Post post = null;
         try (PreparedStatement statement =
                      cnn.prepareStatement("select * from post where id = ?")) {
             statement.setInt(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    post.setId(resultSet.getInt("id"));
-                    post.setUrl(resultSet.getString("link"));
-                    post.setName(resultSet.getString("name"));
-                    post.setText(resultSet.getString("text"));
-                    post.setCreatedDate(LocalDate.parse(resultSet.getString("created")));
+                    post = resulted(resultSet);
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LOG.error("Ошибка при получении по id", e);
         }
         return post;
+    }
+
+    public Post resulted(ResultSet resultSet) throws Exception {
+        return new Post(
+                resultSet.getInt("id"),
+                resultSet.getString("name"),
+                resultSet.getString("link"),
+                resultSet.getString("text"),
+                resultSet.getTimestamp("created").toLocalDateTime()
+        );
     }
 
     @Override

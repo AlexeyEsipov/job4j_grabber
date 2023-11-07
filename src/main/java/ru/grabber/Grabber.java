@@ -1,10 +1,30 @@
 package ru.grabber;
-import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 
-import java.io.*;
+import org.quartz.Job;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.JobExecutionContext;
+import org.quartz.Scheduler;
+import org.quartz.SchedulerException;
+import org.quartz.SimpleScheduleBuilder;
+import org.quartz.Trigger;
+import org.quartz.impl.StdSchedulerFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.grabber.utils.Grab;
+import ru.grabber.utils.HabrCareerDateTimeParser;
+import ru.grabber.utils.Parse;
+import ru.grabber.utils.Post;
+import ru.grabber.utils.Store;
+
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLException;
+import java.util.List;
 import java.util.Properties;
 
 import static org.quartz.JobBuilder.newJob;
@@ -12,14 +32,12 @@ import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
 import static org.quartz.TriggerBuilder.newTrigger;
 
 public class Grabber implements Grab {
+    private static final Logger LOG = LoggerFactory.getLogger(Grabber.class.getName());
+    private static final String LINK = "https://career.habr.com/vacancies/java_developer?page=";
     private final Properties cfg = new Properties();
 
-    public Store store() {
+    public Store store() throws SQLException {
         return new PsqlStore(cfg);
-    }
-
-    public Parse parse() {
-        return new SqlRuParse();
     }
 
     public Scheduler scheduler() throws SchedulerException {
@@ -30,10 +48,10 @@ public class Grabber implements Grab {
 
     public void cfg() {
         try (InputStream in = Grabber.class.getClassLoader()
-                .getResourceAsStream("grabber.properties")) {
-            this.cfg.load(in);
-        } catch (IOException e) {
-            e.printStackTrace();
+                .getResourceAsStream("post.properties")) {
+            cfg.load(in);
+        } catch (Exception e) {
+            LOG.error("Ошибка в файле конфигурации", e);
         }
     }
 
@@ -42,18 +60,35 @@ public class Grabber implements Grab {
         JobDataMap data = new JobDataMap();
         data.put("store", store);
         data.put("parse", parse);
-        data.put("url", cfg.getProperty("parse.url"));
         JobDetail job = newJob(GrabJob.class)
                 .usingJobData(data)
                 .build();
         SimpleScheduleBuilder times = simpleSchedule()
-                .withIntervalInSeconds(Integer.parseInt(cfg.getProperty("grabber.time")))
+                .withIntervalInSeconds(Integer.parseInt(cfg.getProperty("time")))
                 .repeatForever();
         Trigger trigger = newTrigger()
                 .startNow()
                 .withSchedule(times)
                 .build();
         scheduler.scheduleJob(job, trigger);
+    }
+
+    public static class GrabJob implements Job {
+
+        @Override
+        public void execute(JobExecutionContext context) {
+            JobDataMap map = context.getJobDetail().getJobDataMap();
+            Store store = (Store) map.get("store");
+            Parse parse = (Parse) map.get("parse");
+            try {
+                List<Post> postList = parse.list(LINK);
+                for (Post p : postList) {
+                    store.save(p);
+                }
+            } catch (Exception e) {
+                LOG.error("Ошибка в методе execute", e);
+            }
+        }
     }
 
     public void web(Store store) {
@@ -78,25 +113,12 @@ public class Grabber implements Grab {
         }).start();
     }
 
-    public static class GrabJob implements Job {
-
-        @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
-            JobDataMap map = context.getJobDetail().getJobDataMap();
-            Store store = (Store) map.get("store");
-            Parse parse = (Parse) map.get("parse");
-            String url = (String) map.get("url");
-            parse.list(url).forEach(store::save);
-        }
-    }
-
     public static void main(String[] args) throws Exception {
         Grabber grab = new Grabber();
         grab.cfg();
         Scheduler scheduler = grab.scheduler();
         Store store = grab.store();
-        Parse parse = grab.parse();
-        grab.init(parse, store, scheduler);
+        grab.init(new HabrCareerParse(new HabrCareerDateTimeParser()), store, scheduler);
         grab.web(store);
     }
 }
