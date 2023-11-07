@@ -1,4 +1,4 @@
-package ru.job4j.grabber;
+package ru.grabber;
 
 import java.util.List;
 
