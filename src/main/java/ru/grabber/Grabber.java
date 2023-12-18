@@ -43,6 +43,7 @@ public class Grabber implements Grab {
     public Scheduler scheduler() throws SchedulerException {
         Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
         scheduler.start();
+
         return scheduler;
     }
 
